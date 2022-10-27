@@ -36,3 +36,6 @@ build/*
 
 # Remove JetBrains stuff
 .idea/*
+
+# Remove virtual environment
+venv/
