@@ -23,17 +23,16 @@ class graph_node:
     def add_successor(self, succ_id):
         self.succ.append(succ_id)
 
+
 def get_node_from_id(graph_nodes, node_id):
     result = []
     for node in graph_nodes:
 
         if node_id == node.id:
-
             result = node
             break
 
     return result
-
 
 
 def read_trajectory_txt_file(trajectory_file_path):
@@ -56,6 +55,7 @@ def read_squares_txt_file(squares_file_path):
             rows.append(row)
 
     return rows
+
 
 def trajectory_tree_plot(trajectory_rows, figpath, squares=None, nodes=None, tree_depth=None):
     if squares is None:
@@ -149,14 +149,13 @@ def read_graph_vertices(file):
 
 
 def add_graph_successors(file, graph_nodes):
-
     with open(file, "r") as viz:
         viz_reader = csv.reader(viz, delimiter='\n')
 
         for i, r in enumerate(viz_reader):
             if "->" in r[0]:
-                node_id     = r[0].split("->")[0]
-                node_succ   = r[0].split("->")[1].replace(";", "").strip()
+                node_id = r[0].split("->")[0]
+                node_succ = r[0].split("->")[1].replace(";", "").strip()
 
                 graph_nodes[int(node_id)].add_successor(node_succ)
 
