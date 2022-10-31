@@ -110,18 +110,23 @@ message(STATUS "Boost is in: ${Boost_INCLUDE_DIRS}")
 include(ExternalProject)
 
 ## Build OMPL API
+## Please see instructions to do so: https://ompl.kavrakilab.org/buildOptions.html
+## If you are building OMPL from source, there are several options that you can use to configure how OMPL is compiled.
+## The options can be set via the command line like so: cmake -D<option>=ON ../... If you previously ran cmake in your
+## build directory, it is safest to remove the CMakeCache.txt before re-running cmake with different options. Below is
+## a list of all options.
 ExternalProject_Add(ompl
         SOURCE_DIR ${CMAKE_3RDPARTY_DIR}/ompl-1.5.2/
         PREFIX ${CMAKE_3RDPARTY_DIR}/ompl-1.5.2/
         CMAKE_COMMAND cmake ..
         -DCMAKE_BUILD_TYPE=Release
         -DCMAKE_INSTALL_PREFIX=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}ompl-1.5.2/
-        -OMPL_BUILD_DEMOS=OFF
-        -OMPL_BUILD_PYBINDINGS=OFF
-        -OMPL_BUILD_PYTEST=OFF
-        -OMPL_BUILD_TESTS=OFF
-        -OMPL_REGISTRATION=OFF
-        -OMPL_VERSIONED_INSTALL=OFF
+        -DOMPL_BUILD_DEMOS=OFF
+        -DOMPL_BUILD_PYBINDINGS=OFF
+        -DOMPL_BUILD_PYTEST=OFF
+        -DOMPL_BUILD_TESTS=OFF
+        -DOMPL_REGISTRATION=OFF
+        -DOMPL_VERSIONED_INSTALL=OFF
         BUILD_COMMAND make -j${N_CORES}
         INSTALL_DIR ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}ompl-1.5.2/
         INSTALL_COMMAND make install
