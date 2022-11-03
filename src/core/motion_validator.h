@@ -16,30 +16,27 @@
 #include <utility>
 #include <queue>
 
-// Namespace
-namespace base = ompl::base;
-
 /**
  * Personalized motion validator
  */
-class DubinsMotionValidator_Squares : public base::MotionValidator
+class DubinsMotionValidator_Squares : public ompl::base::MotionValidator
 {
 public:
-    DubinsMotionValidator_Squares(base::SpaceInformation *si,const std::vector<simple_square*>* squares)
+    DubinsMotionValidator_Squares(ompl::base::SpaceInformation *si,const std::vector<simple_square*>* squares)
     : MotionValidator(si), squares_(squares)
     {
         defaultSettings();
     }
     ~DubinsMotionValidator_Squares() override = default;
 
-    bool is_in_Squares(const base::State *s) const;
-    bool checkMotion(const base::State *s1, const base::State *s2) const override;
-    bool checkMotion(const base::State *s1, const base::State *s2, std::pair<base::State *, double> &lastValid) const override;
+    bool is_in_Squares(const ompl::base::State *s) const;
+    bool checkMotion(const ompl::base::State *s1, const ompl::base::State *s2) const override;
+    bool checkMotion(const ompl::base::State *s1, const ompl::base::State *s2, std::pair<ompl::base::State *, double> &lastValid) const override;
 
 private:
     const std::vector<simple_square*>* squares_;
 
 private:
-    base::DubinsStateSpace *stateSpace_;
+    ompl::base::DubinsStateSpace *stateSpace_;
     void defaultSettings();
 };

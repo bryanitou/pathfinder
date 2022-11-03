@@ -4,7 +4,7 @@
 
 #include "motion_validator.h"
 
-bool DubinsMotionValidator_Squares::is_in_Squares(const base::State *s) const
+bool DubinsMotionValidator_Squares::is_in_Squares(const ompl::base::State *s) const
 {
     // Get x & y positions:
     const auto *state = s->as<ompl::base::SE2StateSpace::StateType>();
@@ -24,8 +24,8 @@ bool DubinsMotionValidator_Squares::is_in_Squares(const base::State *s) const
     return false;
 }
 
-bool DubinsMotionValidator_Squares::checkMotion(const base::State *s1, const base::State *s2,
-                                                std::pair<base::State *, double> &lastValid) const {
+bool DubinsMotionValidator_Squares::checkMotion(const ompl::base::State *s1, const ompl::base::State *s2,
+                                                std::pair<ompl::base::State *, double> &lastValid) const {
     /* assume motion starts in a valid configuration so s1 is valid */
 
     bool result = true, firstTime = true;
@@ -35,7 +35,7 @@ bool DubinsMotionValidator_Squares::checkMotion(const base::State *s1, const bas
     if (nd > 1)
     {
         /* temporary storage for the checked state */
-        base::State *test = si_->allocState();
+        ompl::base::State *test = si_->allocState();
 
         for (int j = 1; j < nd; ++j)
         {
@@ -76,16 +76,17 @@ void DubinsMotionValidator_Squares::defaultSettings()
 {
     stateSpace_ = dynamic_cast<ompl::base::DubinsStateSpace *>(si_->getStateSpace().get());
     if (stateSpace_ == nullptr)
-        throw ompl::Exception("No state space for motion validator");
+        throw ompl::Exception("No state space for motion validator, or the cast couldn't have been done into "
+                              "OMPL::BASE:: DubinsStateSpace");
 }
 
-bool DubinsMotionValidator_Squares::checkMotion(const base::State *s1, const base::State *s2) const {
+bool DubinsMotionValidator_Squares::checkMotion(const ompl::base::State *s1, const ompl::base::State *s2) const {
     /* assume motion starts in a valid configuration so s1 is valid */
     if (!si_->isValid(s2))
         return false;
 
     bool result = true, firstTime = true;
-    base::DubinsStateSpace::DubinsPath path;
+    ompl::base::DubinsStateSpace::DubinsPath path;
     int nd = stateSpace_->validSegmentCount(s1, s2);
 
     /* initialize the queue of test positions */
@@ -95,7 +96,7 @@ bool DubinsMotionValidator_Squares::checkMotion(const base::State *s1, const bas
         pos.emplace(1, nd - 1);
 
         /* temporary storage for the checked state */
-        base::State *test = si_->allocState();
+        ompl::base::State *test = si_->allocState();
 
         /* repeatedly subdivide the path segment in the middle (and check the middle) */
         while (!pos.empty())
