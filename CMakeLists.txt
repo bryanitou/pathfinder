@@ -172,7 +172,7 @@ add_library(${LIBRARY_CORE} SHARED
         src/core/simple_square.cpp
         src/core/motion_validator.cpp
         src/core/state_sampler.cpp
-        src/omplampli/Ampli_DubinsStateSpace.cpp)
+        src/core/Ampli_DubinsStateSpace.cpp)
 
 add_dependencies(${LIBRARY_CORE}
         ompl)
