@@ -74,7 +74,7 @@ bool DubinsMotionValidator_Squares::checkMotion(const ompl::base::State *s1, con
 
 void DubinsMotionValidator_Squares::defaultSettings()
 {
-    stateSpace_ = dynamic_cast<ompl::base::DubinsStateSpace *>(si_->getStateSpace().get());
+    stateSpace_ = dynamic_cast<Ampli_DubinsStateStateSpace *>(si_->getStateSpace().get());
     if (stateSpace_ == nullptr)
         throw ompl::Exception("No state space for motion validator, or the cast couldn't have been done into "
                               "OMPL::BASE:: DubinsStateSpace");

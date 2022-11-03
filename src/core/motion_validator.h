@@ -1,4 +1,6 @@
-
+/**
+ * Modification of the Motion validator in order to avoid squares.
+ */
 #pragma once
 
 // OMPL library
@@ -9,7 +11,7 @@
 
 // Pathfinder libraries
 #include "simple_square.h"
-#include "ompl/base/spaces/DubinsStateSpace.h"
+#include "Ampli_DubinsStateSpace.h"
 
 // System libraries
 #include <vector>
@@ -37,6 +39,6 @@ private:
     const std::vector<simple_square*>* squares_;
 
 private:
-    ompl::base::DubinsStateSpace *stateSpace_;
+    Ampli_DubinsStateStateSpace *stateSpace_;
     void defaultSettings();
 };
