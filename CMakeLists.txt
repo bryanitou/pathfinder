@@ -9,7 +9,8 @@ project(pathfinder)
 # CMAKE MINIMUM REQUIRED VERSION
 cmake_minimum_required(VERSION 3.21)
 
-set(CMAKE_CXX_STANDARD 14)
+# CXX Standard to be used by the compiler
+set(CMAKE_CXX_STANDARD 17)
 
 ############################################
 # GENERAL INFORMATION
