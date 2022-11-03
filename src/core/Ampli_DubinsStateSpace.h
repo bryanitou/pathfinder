@@ -37,4 +37,12 @@ public:
         return this->rho_;
     }
 
+    /**
+     * Sets the radius in the DubinsStateSpace.
+     */
+    void setRadius(double newRadius)
+    {
+        this->rho_ = newRadius;
+    }
+
 };
