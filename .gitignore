@@ -39,3 +39,6 @@ build/*
 
 # Remove virtual environment
 venv/
+
+# Remove output stuff
+out/
