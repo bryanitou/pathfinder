@@ -169,9 +169,10 @@ set(LIBRARY_CORE "core")
 
 add_library(${LIBRARY_CORE} SHARED
         src/core/preprocessor.cpp
-        src/core/preprocessor.h
         src/core/simple_square.cpp
-        src/core/simple_square.h src/core/motion_validator.cpp src/core/motion_validator.h src/core/state_sampler.cpp src/core/state_sampler.h)
+        src/core/motion_validator.cpp
+        src/core/state_sampler.cpp
+        src/omplampli/Ampli_DubinsStateSpace.cpp)
 
 add_dependencies(${LIBRARY_CORE}
         ompl)
