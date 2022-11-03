@@ -47,6 +47,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <filesystem>
 
 // Pathfinder libraries
 #include "simple_square.h"
@@ -117,7 +118,7 @@ void plan(const ob::StateSpacePtr& space, bool easy, std::string& plan_txt_path,
                                });
 
     const double min_radius = 1; // meters
-    ss.getStateSpace()->as<ob::DubinsStateSpace>()->setRadius(min_radius);
+    ss.getStateSpace()->as<Ampli_DubinsStateStateSpace>()->setRadius(min_radius);
     si->setMotionValidator(std::make_shared<DubinsMotionValidator_Squares>(si, squares));
 
     // set the start and goal states
@@ -247,8 +248,18 @@ void printDistanceGrid(const ob::StateSpacePtr& space)
 
 void printSimpleSquares(std::vector<simple_square*>* squares)
 {
+    // Path of the output file
+    std::filesystem::path outputpath = "./out/simple_squares.txt";
+    auto parentpath = outputpath.parent_path();
+
     std::ofstream myfile;
-    myfile.open ("./out/simple_squares.txt");
+    myfile.open(outputpath);
+
+    // Check if folder exists
+    if (!std::filesystem::is_directory(parentpath))
+    {
+        std::filesystem::create_directories(parentpath);
+    }
 
     std::vector<double> sq_lims(4);
 
@@ -313,7 +324,7 @@ int main(int argc, char* argv[])
         ob::StateSpacePtr space(std::make_shared<ob::ReedsSheppStateSpace>());
 
         if (vm.count("dubins") != 0u)
-            space = std::make_shared<ob::DubinsStateSpace>();
+            space = std::make_shared<Ampli_DubinsStateStateSpace>();
         if (vm.count("dubinssym") != 0u)
             space = std::make_shared<ob::DubinsStateSpace>(1., true);
         if (vm.count("easyplan") != 0u)
