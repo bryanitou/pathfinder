@@ -287,6 +287,7 @@ int main(int argc, char* argv[])
                 ("trajectory", po::value<std::vector<double > >()->multitoken(),
                  "print trajectory from (0,0,0) to a user-specified x, y, and theta")
                 ("distance", "print distance grid")
+                ("default", "will use dubins and easyplan")
                 ;
 
         po::variables_map vm;
@@ -323,11 +324,11 @@ int main(int argc, char* argv[])
 
         ob::StateSpacePtr space(std::make_shared<ob::ReedsSheppStateSpace>());
 
-        if (vm.count("dubins") != 0u)
+        if (vm.count("dubins") != 0u || vm.count("default") != 0u)
             space = std::make_shared<Ampli_DubinsStateStateSpace>();
         if (vm.count("dubinssym") != 0u)
             space = std::make_shared<ob::DubinsStateSpace>(1., true);
-        if (vm.count("easyplan") != 0u)
+        if (vm.count("easyplan") != 0u || vm.count("default") != 0u)
             plan(space, true, plan_txt_path,squares_ptr);
         if (vm.count("trajectory") != 0u)
             printTrajectory(space, vm["trajectory"].as<std::vector<double> >(), trajectory_txt_path);
