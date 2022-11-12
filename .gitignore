@@ -42,3 +42,6 @@ venv/
 
 # Remove output stuff
 out/
+
+# Remove user configuration
+cfg/
