@@ -213,3 +213,18 @@ add_dependencies(${EXECUTABLE_NAME}
 target_link_libraries(${EXECUTABLE_NAME}
         ${LIBRARY_CORE}
         ${Boost_LIBRARIES})
+
+
+############################################
+# EXECUTABLES: DUAVC main
+############################################
+set(EXECUTABLE_NAME "duavc_planning")
+
+add_executable(${EXECUTABLE_NAME} src/main/duavc_planning.cpp)
+
+add_dependencies(${EXECUTABLE_NAME}
+        RECOMPILE_STATIC_FLAGS)
+
+target_link_libraries(${EXECUTABLE_NAME}
+        ${LIBRARY_CORE}
+        ${Boost_LIBRARIES})
