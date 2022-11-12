@@ -164,6 +164,20 @@ set_target_properties(${LIBRARY_OMPL} PROPERTIES
         IMPORTED_LOCATION ${ompllib_path})
 
 #===========================================
+# LIBRARY: POST-PROCESS, free OMPL and BOOST dependent
+#===========================================
+set(LIBRARY_PREPROCESS "preprocess")
+
+add_library(${LIBRARY_PREPROCESS} SHARED
+        src/preprocess/duavc_input_file.cpp)
+
+target_link_libraries(${LIBRARY_PREPROCESS})
+
+set_target_properties(${LIBRARY_CORE} PROPERTIES
+        COMPILE_FLAGS "-fPIC"
+        LINK_FLAGS "-Wl,-rpath,./") # To use relative paths in shared libs
+
+#===========================================
 # LIBRARY: PATHFINDER CORE
 #===========================================
 set(LIBRARY_CORE "core")
@@ -186,19 +200,6 @@ target_link_libraries(${LIBRARY_CORE}
 set_target_properties(${LIBRARY_CORE} PROPERTIES
         COMPILE_FLAGS "-fPIC"
         LINK_FLAGS "-Wl,-rpath,./") # To use relative paths in shared libs
-
-############################################
-# EXECUTABLES: pathfinder
-############################################
-set(EXECUTABLE_NAME "pathfinder")
-
-add_executable(${EXECUTABLE_NAME} src/main/main.cpp src/main/duavc_planning.cpp)
-
-add_dependencies(${EXECUTABLE_NAME}
-        RECOMPILE_STATIC_FLAGS)
-
-target_link_libraries(${EXECUTABLE_NAME}
-        ${LIBRARY_CORE})
 
 ############################################
 # EXECUTABLES: GEOMETRIC CAR

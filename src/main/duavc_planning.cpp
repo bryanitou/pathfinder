@@ -1,6 +1,7 @@
 /**
  * Main used for the DUAVC project.
  */
+
 // Boost libraries
 #include <boost/program_options.hpp>
 
@@ -65,15 +66,18 @@ int main(int argc, char* argv[])
             else
             {
                 // At this point, we don't have enough information, throw error and terminate the program
+
             }
         }
         else if (vm.count("file") != 0u)
         {
             // At this point, means we have to use the input file
+
         }
         else
         {
             // At this point, means
+
         }
     }
     catch(std::exception& e) {

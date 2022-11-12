@@ -6,9 +6,21 @@
 
 
 void plans::plan_DUAVC(const ompl::base::StateSpacePtr& space, std::string& plan_txt_path,
-                       const ompl::base::ScopedState<>& start, const ompl::base::ScopedState<>& goal,
+                       const std::vector<double>& start_state, const std::vector<double>& goal_state,
                        const std::vector<simple_square*>* squares)
 {
+    // Scoped state
+    ompl::base::ScopedState<> start_scoped(space), goal_scoped(space);
+
+    // Convert general coordinate state to scoped state
+    start_scoped[0] = start_scoped[0];
+    start_scoped[1] = start_scoped[1];
+    start_scoped[2] = start_scoped[2];
+    goal_scoped[0] = goal_state[0];
+    goal_scoped[1] = goal_state[1];
+    goal_scoped[2] = goal_state[2];
+
+    // Bounds
     ompl::base::RealVectorBounds bounds(2);
     bounds.setLow(0);
     bounds.setHigh(18);
@@ -35,8 +47,8 @@ void plans::plan_DUAVC(const ompl::base::StateSpacePtr& space, std::string& plan
     ss.getStateSpace()->as<Ampli_DubinsStateStateSpace>()->setRadius(min_radius);
     si->setMotionValidator(std::make_shared<DubinsMotionValidator_Squares>(si, squares));
 
-    // Set the start and goal
-    ss.setStartAndGoalStates(start, goal);
+    // Set the start_scoped and goal_scoped
+    ss.setStartAndGoalStates(start_scoped, goal_scoped);
 
     // this call is optional, but we put it in to get more output information
     ss.getSpaceInformation()->setStateValidityCheckingResolution(0.0005);
@@ -47,7 +59,7 @@ void plans::plan_DUAVC(const ompl::base::StateSpacePtr& space, std::string& plan
     ss.setup();
     ss.print();
 
-    // attempt to solve the problem within 30 seconds of planning time
+    // Attempt to solve the problem within 30 seconds of planning time
     ompl::base::PlannerStatus solved = ss.solve(0.05);
 
     if (solved)
@@ -89,8 +101,8 @@ void plans::plan_DUAVC(const ompl::base::StateSpacePtr& space, std::string& plan
             double yaw = vertex_state->getYaw();
 
             // Note : format
-            // i = 0: goal
-            // i = 1: start
+            // i = 0: goal_scoped
+            // i = 1: start_scoped
             // Write in file
             myfile2 << std::to_string(i) << " ";
             myfile2 << std::to_string(x) << " ";
