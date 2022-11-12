@@ -173,7 +173,9 @@ add_library(${LIBRARY_CORE} SHARED
         src/core/simple_square.cpp
         src/core/motion_validator.cpp
         src/core/state_sampler.cpp
-        src/core/Ampli_DubinsStateSpace.cpp)
+        src/core/Ampli_DubinsStateSpace.cpp
+        src/core/plans.cpp
+        src/core/state_validity_checker.cpp)
 
 add_dependencies(${LIBRARY_CORE}
         ompl)
@@ -190,7 +192,7 @@ set_target_properties(${LIBRARY_CORE} PROPERTIES
 ############################################
 set(EXECUTABLE_NAME "pathfinder")
 
-add_executable(${EXECUTABLE_NAME} src/main/main.cpp)
+add_executable(${EXECUTABLE_NAME} src/main/main.cpp src/main/duavc_planning.cpp)
 
 add_dependencies(${EXECUTABLE_NAME}
         RECOMPILE_STATIC_FLAGS)

@@ -122,8 +122,12 @@ void plan(const ob::StateSpacePtr& space, bool easy, std::string& plan_txt_path,
     si->setMotionValidator(std::make_shared<DubinsMotionValidator_Squares>(si, squares));
 
     // set the start and goal states
-    start[0] = start[1] = 1.; start[2] = 0.;
-    goal[0] = goal[1] = 17; goal[2] = -(1./2)*boost::math::constants::pi<double>();
+    start[0] = 4;
+    start[1] = 5;
+    start[2] = 0.;
+    goal[0] = 2;
+    goal[1] = 5;
+    goal[2] = 0.;
 
     ss.setStartAndGoalStates(start, goal);
 
@@ -311,16 +315,20 @@ int main(int argc, char* argv[])
         auto square3 = simple_square(12, 13, 15, 0);
         auto square4 = simple_square(14, 15, 18, 5);
         auto square5 = simple_square(3.5, 5.5, 10, 5);
+        auto width = 0.2;
+        auto square6 = simple_square(3-width, 3+width, 7+width, 7-width);
         auto square1ptr = &square1;
         auto square2ptr = &square2;
         auto square3ptr = &square3;
         auto square4ptr = &square4;
         auto square5ptr = &square5;
+        auto square6ptr = &square6;
         // Fill vector
         std::vector<simple_square*> squares{};
         auto squares_ptr = &squares;
-        squares_ptr->push_back(square1ptr);
-        squares_ptr->push_back(square2ptr);
+        // squares_ptr->push_back(square1ptr);
+        // squares_ptr->push_back(square2ptr);
+        squares_ptr->push_back(square6ptr);
 
         ob::StateSpacePtr space(std::make_shared<ob::ReedsSheppStateSpace>());
 
