@@ -14,13 +14,12 @@
 // Project libraries
 #include "simple_square.h"
 #include "state_validity_checker.h"
-#include "Ampli_DubinsStateSpace.h"
 #include "motion_validator.h"
 
 namespace plans
 {
     void
     plan_DUAVC(const ompl::base::StateSpacePtr &space, std::string &plan_txt_path,
-               const ompl::base::ScopedState<> &start,
-               const ompl::base::ScopedState<> &goal, const std::vector<simple_square *> *squares);
+               const ompl::base::ScopedState<> &start, const ompl::base::ScopedState<> &goal,
+               const std::vector<simple_square *> *squares);
 }
