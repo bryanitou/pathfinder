@@ -133,6 +133,12 @@ ExternalProject_Add(ompl
         INSTALL_COMMAND make install
         )
 
+# ExternalProject_Add(RSJP
+#         SOURCE_DIR ${CMAKE_3RDPARTY_DIR}/RSJp-cpp-master/
+#         PREFIX ${CMAKE_3RDPARTY_DIR}/RSJp-cpp-master/
+#         INSTALL_DIR ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}RSJp-cpp-master/
+#         )
+
 ############################################
 # EXTERNAL INFORMATION
 ############################################
@@ -143,12 +149,20 @@ set(ompllib_dir "${install_dir}/lib")
 set(ompllib_file "${CMAKE_SHARED_LIBRARY_PREFIX}ompl${CMAKE_SHARED_LIBRARY_SUFFIX}")
 set(ompllib_path "${ompllib_dir}/${ompllib_file}")
 
+# Get info from external JSON parser: RSJp-cpp-master
+# ExternalProject_Get_Property(RSJP install_dir)
+# set(RSJPinclude "${install_dir}/include")
+# set(RSJPlib_dir "${install_dir}/lib")
+# set(RSJPlib_file "${CMAKE_SHARED_LIBRARY_PREFIX}RSJp-cpp-master${CMAKE_SHARED_LIBRARY_SUFFIX}")
+# set(RSJPlib_path "${RSJPlib_dir}/${RSJPlib_file}")
+
 ############################################
 # FILES LOCATION
 ############################################
 # Location of header files and libraries (inside source dir, except the includes)
 include_directories(
         ${omplinclude}
+        ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}RSJp-cpp-master/include
         src/core
         ${EIGEN3_INCLUDE_DIR}
         ${Boost_INCLUDE_DIRS})
@@ -163,6 +177,24 @@ add_library(${LIBRARY_OMPL} SHARED IMPORTED)
 set_target_properties(${LIBRARY_OMPL} PROPERTIES
         IMPORTED_LOCATION ${ompllib_path})
 
+#===========================================
+# LIBRARY: RSJp-cpp-master (IMPORTED LIBRARY)
+#===========================================
+add_library(rsjp SHARED
+        ${CMAKE_3RDPARTY_DIR}/RSJp-cpp-master/RSJparser.tcc)
+
+# Provide the full path to the library, so CMake knows where to find it
+set_target_properties(rsjp PROPERTIES LINKER_LANGUAGE CXX COMPILE_FLAGS "-fPIC"
+        PUBLIC_HEADER "${CMAKE_3RDPARTY_DIR}/RSJp-cpp-master/RSJparser.tcc")
+
+# TODO: INSTALLATION STILL NOT WORKING, should change the prefix of the PREFIX and make install the makefile
+install(TARGETS rsjp
+        LIBRARY DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}RSJp-cpp-master/lib
+        PUBLIC_HEADER DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}RSJp-cpp-master/include)
+
+# add_custom_target(rsjp COMMAND make install
+#         WORKING_DIRECTORY ${CMAKE_3RDPARTY_DIR}/RSJp-cpp-master/
+#         )
 #===========================================
 # LIBRARY: POST-PROCESS, free OMPL and BOOST dependent
 #===========================================
@@ -189,7 +221,9 @@ add_library(${LIBRARY_CORE} SHARED
         src/core/state_sampler.cpp
         src/core/Ampli_DubinsStateSpace.cpp
         src/core/plans.cpp
-        src/core/state_validity_checker.cpp)
+        src/core/state_validity_checker.cpp
+        src/core/json_parser.cpp
+        src/core/handy_str.cpp)
 
 add_dependencies(${LIBRARY_CORE}
         ompl)
