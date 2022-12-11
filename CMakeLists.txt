@@ -148,7 +148,7 @@ set(ompllib_path "${ompllib_dir}/${ompllib_file}")
 ############################################
 # Location of header files and libraries (inside source dir, except the includes)
 include_directories(
-        ${omplinclude}/ompl-1.5
+        ${omplinclude}
         src/core
         ${EIGEN3_INCLUDE_DIR}
         ${Boost_INCLUDE_DIRS})
