@@ -162,11 +162,7 @@ def add_graph_successors(file, graph_nodes):
 
     return True
 
-
-if __name__ == '__main__':
-    # Get arguments
-    arguments = sys.argv[1:]
-
+def main(arguments):
     # Get path
     trajectory_file = arguments[0]
 
@@ -197,3 +193,8 @@ if __name__ == '__main__':
 
         # Plot it
         trajectory_tree_plot(trajectory_lines, fig_path, square_lines, nodes, tree_depth=None)
+
+
+if __name__ == '__main__':
+    # Call to main running function
+    main(arguments=sys.argv[1:])
