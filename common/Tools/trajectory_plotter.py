@@ -101,7 +101,8 @@ def trajectory_tree_plot(trajectory_rows, figpath, squares=None, nodes=None, tre
     axs[0].plot(x, y, linewidth=linewidth)
     axs[1].plot(x, a, linestyle="", marker="o", markersize=0.5)
     axs[1].set_ylabel("Degrees [º]")
-    plt.grid()
+    axs[0].grid()
+    axs[1].grid()
 
     plt.savefig(figpath, dpi=300)
 
