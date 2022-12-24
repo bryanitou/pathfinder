@@ -68,11 +68,15 @@ int main(int argc, char* argv[])
             if (vm.count("start") != 0u && vm.count("goal"))
             {
                 // At this point, use the start and goal information entered from the command line
+                std::cerr << "Error: start and goal still not implemented from terminal." << "\n";
+                return 1;
 
             }
             else
             {
                 // At this point, we don't have enough information, throw error and terminate the program
+                std::cerr << "Not enough arguments passed. For help, use --help as an argument." << "\n";
+                return 1;
 
             }
         }
@@ -89,7 +93,7 @@ int main(int argc, char* argv[])
         }
     }
     catch(std::exception& e) {
-        std::cerr << "error: " << e.what() << "\n";
+        std::cerr << "Error: " << e.what() << "\n";
         return 1;
     }
     catch(...) {
