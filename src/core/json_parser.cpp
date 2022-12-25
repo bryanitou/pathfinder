@@ -60,10 +60,7 @@ void json_parser::read_bounds(RSJresource &RSJ_obj, json_parser::json_obj &outpu
     // This function is dedicated to read the bounds
     auto bounds_dict = RSJ_obj["bounds"].as_map<std::string>();
 
-    // Now we have to access the parameters
-    // Read if we are in degrees or radians
-
-    // Temporal auxiliary variable for readibility
+    // Now we have to access the parameters and save them
     output_json_obj.lat_upper = std::stod(bounds_dict["lat_upper"]);
     output_json_obj.lat_lower = std::stod(bounds_dict["lat_lower"]);
     output_json_obj.lon_right = std::stod(bounds_dict["lon_right"]);
