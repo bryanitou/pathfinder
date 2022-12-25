@@ -36,7 +36,7 @@ json_parser::json_obj json_parser::parse_input_file(const std::string& filepath)
     auto my_resource_obj = RSJresource (json_text);
 
     // Read the units of the numbers
-    std::string units_str = my_resource_obj["units"].as_str();
+    std::string units_str = tools_str::clean_bars(my_resource_obj["units"].as_str());
     bool deg2rad = units_str == "deg" || units_str == "degrees" || units_str == "degs";
 
     // Extract objects from there TODO: Add fallbacks in case they don't exist
