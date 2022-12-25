@@ -85,6 +85,9 @@ int main(int argc, char* argv[])
             // At this point, means we have to use the input file
             // Get the name of the input file
             auto parsed_object = json_parser::parse_input_file(input_file);
+
+            // Once we have the parsed object, we have to launch the simulation
+
         }
         else
         {

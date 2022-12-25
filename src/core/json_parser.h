@@ -5,6 +5,7 @@
 
 #include "RSJparser.tcc"
 #include "tools_str.h"
+#include "constants.h"
 
 namespace json_parser
 {
@@ -14,6 +15,10 @@ namespace json_parser
         std::vector<double> goal;
         std::vector<double> start;
 
+        double lat_upper;
+        double lat_lower;
+        double lon_right;
+        double lon_left;
     };
 
     /**
@@ -22,5 +27,18 @@ namespace json_parser
      */
     json_parser::json_obj parse_input_file(const std::string& filepath);
 
+    /**
+     * Function structured to read the bounds
+     * @param RSJ_obj
+     * @param output_json_obj
+     */
+    void read_bounds(RSJresource& RSJ_obj, json_parser::json_obj & output_json_obj);
+
+    /**
+     * Updates the units of the whole structure 'json_obj' defined above
+     * @param output_json_obj
+     * @param deg2rad
+     */
+    void update_units(json_parser::json_obj & output_json_obj, bool deg2rad);
 };
 

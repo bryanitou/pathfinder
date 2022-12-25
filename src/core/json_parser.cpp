@@ -6,7 +6,7 @@
 
 json_parser::json_obj json_parser::parse_input_file(const std::string& filepath)
 {
-    // Auxilary variables
+    // Auxiliary variables
     std::string json_text{};
     std::string json_line{};
 
@@ -35,11 +35,62 @@ json_parser::json_obj json_parser::parse_input_file(const std::string& filepath)
     // Build parsed object
     auto my_resource_obj = RSJresource (json_text);
 
-    // Extract objects from there
+    // Read the units of the numbers
+    std::string units_str = my_resource_obj["units"].as_str();
+    bool deg2rad = units_str == "deg" || units_str == "degrees" || units_str == "degs";
+
+    // Extract objects from there TODO: Add fallbacks in case they don't exist
     my_json_obj.goal = my_resource_obj["goal"].as_vector<double>();
     my_json_obj.start = my_resource_obj["start"].as_vector<double>();
     my_json_obj.operator_str = tools_str::clean_bars(my_resource_obj["operator"].as_str());
 
+    // Parse the bounds
+    json_parser::read_bounds(my_resource_obj, my_json_obj);
+
+    // Change units only if required
+    json_parser::update_units(my_json_obj, deg2rad);
+
     // Return the object
     return my_json_obj;
+}
+
+void json_parser::read_bounds(RSJresource &RSJ_obj, json_parser::json_obj &output_json_obj)
+{
+    // To be returned is 'output_json_obj'
+    // This function is dedicated to read the bounds
+    auto bounds_dict = RSJ_obj["bounds"].as_map<std::string>();
+
+    // Now we have to access the parameters
+    // Read if we are in degrees or radians
+
+    // Temporal auxiliary variable for readibility
+    output_json_obj.lat_upper = std::stod(bounds_dict["lat_upper"]);
+    output_json_obj.lat_lower = std::stod(bounds_dict["lat_lower"]);
+    output_json_obj.lon_right = std::stod(bounds_dict["lon_right"]);
+    output_json_obj.lon_left  = std::stod(bounds_dict["lon_left"]);
+}
+
+void json_parser::update_units(json_parser::json_obj &output_json_obj, bool deg2rad)
+{
+    // If it is false, do nothing
+    if (!deg2rad)
+    {
+        return;
+    }
+
+    // Update units of the obejct
+    output_json_obj.lat_upper =  output_json_obj.lat_upper * constants::deg2rad;
+    output_json_obj.lat_lower =  output_json_obj.lat_lower * constants::deg2rad;
+    output_json_obj.lon_right =  output_json_obj.lon_right * constants::deg2rad;
+    output_json_obj.lon_left = output_json_obj.lon_left  * constants::deg2rad;
+
+    // Loop into the other vectors
+    for (double & val : output_json_obj.goal)
+    {
+        val = val *  constants::deg2rad;
+    }
+    for (double & val : output_json_obj.start)
+    {
+        val = val *  constants::deg2rad;
+    }
 }

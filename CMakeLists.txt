@@ -223,7 +223,8 @@ add_library(${LIBRARY_CORE} SHARED
         src/core/plans.cpp
         src/core/state_validity_checker.cpp
         src/core/json_parser.cpp
-        src/core/tools_str.cpp)
+        src/core/tools_str.cpp
+        src/core/constants.h)
 
 add_dependencies(${LIBRARY_CORE}
         ompl)
