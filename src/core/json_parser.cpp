@@ -38,7 +38,7 @@ json_parser::json_obj json_parser::parse_input_file(const std::string& filepath)
     // Extract objects from there
     my_json_obj.goal = my_resource_obj["goal"].as_vector<double>();
     my_json_obj.start = my_resource_obj["start"].as_vector<double>();
-    my_json_obj.operator_str = handy_str::clean_bars(my_resource_obj["operator"].as_str());
+    my_json_obj.operator_str = tools_str::clean_bars(my_resource_obj["operator"].as_str());
 
     // Return the object
     return my_json_obj;

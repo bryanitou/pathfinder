@@ -2,15 +2,15 @@
 // Created by bryan on 11/12/22.
 //
 
-#include "handy_str.h"
+#include "tools_str.h"
 
-std::string handy_str::clean_bars(const std::string& str2clean)
+std::string tools_str::clean_bars(const std::string& str2clean)
 {
     // Copy new string
     std::string str2return = str2clean;
 
     // Chars we want to remove:
-    std::string chars2remove = handy_str::keys::bars + handy_str::keys::comma;
+    std::string chars2remove = tools_str::keys::bars + tools_str::keys::comma;
 
     // Remove characters
     for(char char2remove : chars2remove)

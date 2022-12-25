@@ -3,7 +3,7 @@
 #include <string>
 #include <algorithm>
 
-namespace handy_str
+namespace tools_str
 {
     // Auxiliary general values
     namespace keys
