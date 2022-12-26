@@ -5,35 +5,42 @@
 #include "plans.h"
 
 
-void plans::plan_DUAVC(const ompl::base::StateSpacePtr& space, std::string& plan_txt_path,
-                       const std::vector<double>& start_state, const std::vector<double>& goal_state,
-                       const std::vector<simple_square*>* squares)
+void plans::plan_DUAVC(const ompl::base::StateSpacePtr& space, json_parser::json_obj& json_obj,
+                       std::string& plan_txt_path, const std::vector<simple_square*>* squares)
 {
     // Scoped state
     ompl::base::ScopedState<> start_scoped(space), goal_scoped(space);
 
     // Convert general coordinate state to scoped state
-    start_scoped[0] = start_scoped[0];
-    start_scoped[1] = start_scoped[1];
-    start_scoped[2] = start_scoped[2];
-    goal_scoped[0] = goal_state[0];
-    goal_scoped[1] = goal_state[1];
-    goal_scoped[2] = goal_state[2];
+    start_scoped[0] = json_obj.start[0];
+    start_scoped[1] = json_obj.start[1];
+    start_scoped[2] = json_obj.start[2];
+    goal_scoped[0] = json_obj.goal[0];
+    goal_scoped[1] = json_obj.goal[1];
+    goal_scoped[2] = json_obj.goal[2];
 
-    // Bounds
+    // Declare bounds
     ompl::base::RealVectorBounds bounds(2);
-    bounds.setLow(0);
-    bounds.setHigh(18);
 
+    // Set the bounds: x-axis
+    bounds.setLow(0, json_obj.lon_left);
+    bounds.setHigh(0, json_obj.lon_right);
+
+    // Set the bounds: y-axis
+    bounds.setLow(1, json_obj.lat_lower);
+    bounds.setHigh(1, json_obj.lat_upper);
+
+    // Set the bounds
     space->as<ompl::base::SE2StateSpace>()->setBounds(bounds);
 
-    // define a simple setup class
+    // Declare a SS (Simple Setup) class
     ompl::geometric::SimpleSetup ss(space);
 
-    // set state validity checking for this space
+    // Set state validity checking for this space
     ompl::base::SpaceInformation *si = ss.getSpaceInformation().get();
     ompl::base::SpaceInformationPtr siPtr = ss.getSpaceInformation();
 
+    // Set the State Validity Checker
     ompl::base::ProblemDefinition pdef  (siPtr);
 
     auto isStateValid = state_validity_checker::isStateValidSquares;
@@ -42,26 +49,43 @@ void plans::plan_DUAVC(const ompl::base::StateSpacePtr& space, std::string& plan
                                    return isStateValid(si, state, squares);
                                });
 
-    // Meters
+    // Minimum radius for the turns
     const double min_radius = 1;
+
+    // Set the minimum radius in the 'Extended' class
     ss.getStateSpace()->as<Ampli_DubinsStateStateSpace>()->setRadius(min_radius);
+
+    // Set the motion validator
     si->setMotionValidator(std::make_shared<DubinsMotionValidator_Squares>(si, squares));
 
-    // Set the start_scoped and goal_scoped
+    // Set the 'start_scoped' and 'goal_scoped' poses
     ss.setStartAndGoalStates(start_scoped, goal_scoped);
 
-    // this call is optional, but we put it in to get more output information
+    // This call is optional, but we put it in to get more output information
     ss.getSpaceInformation()->setStateValidityCheckingResolution(0.0005);
+
+    // Set the planner to be used
     ompl::base::PlannerPtr planner(new ompl::geometric::RRT(siPtr));
+
+    // Set the Goal Bias of the planner
     planner->as<ompl::geometric::RRT>()->setGoalBias(0.05);
+
+    // Set the range to be used
     planner->as<ompl::geometric::RRT>()->setRange(15);
+
+    // Set the planner chosen and defined above
     ss.setPlanner(planner);
+
+    // Setup
     ss.setup();
+
+    // Print information
     ss.print();
 
-    // Attempt to solve the problem within 30 seconds of planning time
+    // Attempt to solve the problem within 0.05 seconds of planning time
     ompl::base::PlannerStatus solved = ss.solve(0.05);
 
+    // Check if solved
     if (solved)
     {
         std::ofstream myfile;
