@@ -19,7 +19,25 @@
 
 namespace plans
 {
-    void
-    plan_DUAVC(const ompl::base::StateSpacePtr &space, json_parser::json_obj& json_obj, std::string &plan_txt_path,
-               const std::vector<simple_square *> *squares);
+    /**
+     * Main planner function.
+     * - Set the state space
+     * - Set the bounds
+     * - Set the check validator
+     * - Set the start/goal poses
+     * @param space
+     * @param json_obj
+     * @param output_archive_path
+     * @param squares
+     */
+    void plan_DUAVC(const ompl::base::StateSpacePtr &space, json_parser::json_obj& json_obj,
+                    std::string &output_archive_path, const std::vector<simple_square *> *squares = nullptr);
+
+
+    /**
+     * Dump the solution to some files
+     * @param output_archive_path
+     * @param ss
+     */
+    void dump_solution(std::string &output_archive_path, ompl::geometric::SimpleSetup &ss);
 }
