@@ -6,7 +6,7 @@
 
 
 void plans::plan_DUAVC(const ompl::base::StateSpacePtr& space, json_parser::json_obj& json_obj,
-                       std::string& output_archive_path, const std::vector<simple_square*>* squares)
+                       std::vector<pathfinder_output>& output_objects, const std::vector<simple_square*>* squares)
 {
     // Scoped state
     ompl::base::ScopedState<> start_scoped(space), goal_scoped(space);
@@ -92,13 +92,10 @@ void plans::plan_DUAVC(const ompl::base::StateSpacePtr& space, json_parser::json
         std::cout << "Found solution:" << std::endl;
 
         // Info: we are going to print some files
-        std::cout << "Some files are going to be written in the archive" + output_archive_path << std::endl;
+        std::cout << "Some files are going to be written!" << std::endl;
 
         // Dump solution into some files
-        plans::dump_solution(output_archive_path, ss);
-
-        // Info: notice we have finished
-        std::cout << "All files written in the archive: " + output_archive_path << std::endl;
+        plans::dump_solution(output_objects, ss);
     }
     else
     {
@@ -108,38 +105,71 @@ void plans::plan_DUAVC(const ompl::base::StateSpacePtr& space, json_parser::json
 }
 
 
-void plans::dump_solution(std::string &output_archive_path, ompl::geometric::SimpleSetup& ss)
+void plans::dump_solution(std::vector<pathfinder_output> &output_objects, ompl::geometric::SimpleSetup& ss)
 {
     // From the ss, get the space information pointer and the planner
     auto siPtr = ss.getSpaceInformation();
     auto planner = ss.getPlanner();
-
-    // Build paths
-    std::string plan_txt_path       = output_archive_path + "/plan.txt";
-    std::string vertexes_vrt_path   = output_archive_path + "/vertexes.vrt";
-    std::string graph_viz_path      = output_archive_path + "/graph.viz";
-
-    // Create file stream
-    std::ofstream plan_file_stream;
-    plan_file_stream.open(plan_txt_path);
-    std::vector<double> reals;
 
     // Simplify solution output:
     // TODO: Research what the hell the "Simplify" function does, are we loosing too much accuracy?
     ss.simplifySolution();
 
     // Get the solution path as a list of reals
-    ompl::geometric::PathGeometric path = ss.getSolutionPath();
+    ompl::geometric::PathGeometric geometric_path = ss.getSolutionPath();
+
+    // Get the planner data, so we can extract useful information such as the expanded search tree
+    auto planner_data = new ompl::base::PlannerData(siPtr);
+
+    // Create file stream
+    for (auto & output_obj : output_objects)
+    {
+        if (output_obj.get_launch())
+        {
+            switch (output_obj.get_type())
+            {
+                case OUTPUT_TYPE::PLAN:
+                {
+                    plans::dump_plan(output_obj.get_path(), geometric_path);
+                    break;
+                }
+                case OUTPUT_TYPE::GRAPH:
+                {
+                    plans::dump_graph(output_obj.get_path(), siPtr, planner);
+                    break;
+                }
+                case OUTPUT_TYPE::VERTEXES:
+                {
+                    plans::dump_vertex(output_obj.get_path(), planner_data);
+                    break;
+                }
+                default:
+                {
+                    break;
+                }
+            }
+        }
+    }
+}
+
+void plans::dump_plan(const std::string& file_path, ompl::geometric::PathGeometric& geometric_path)
+{
+    // Create file stream
+    std::ofstream plan_file_stream;
+    plan_file_stream.open(file_path);
 
     // Interpolate the path, getting as a result 1000 points
-    path.interpolate(1000);
+    geometric_path.interpolate(1000);
 
     // Print the path as a matrix in the given stream
-    path.printAsMatrix(plan_file_stream);
+    geometric_path.printAsMatrix(plan_file_stream);
 
     // Close the stream
     plan_file_stream.close();
+}
 
+void plans::dump_graph(const std::string& file_path, const ompl::base::SpaceInformationPtr& siPtr, const ompl::base::PlannerPtr& planner)
+{
     // Get the planner data, so we can extract useful information such as the expanded search tree
     auto planner_data = new ompl::base::PlannerData(siPtr);
 
@@ -148,7 +178,7 @@ void plans::dump_solution(std::string &output_archive_path, ompl::geometric::Sim
 
     // Create the graph viz file stream
     std::ofstream graph_viz_stream;
-    graph_viz_stream.open (graph_viz_path);
+    graph_viz_stream.open (file_path);
 
     // Print the graph (from the expanded tree) in the stream, it has its own format '.viz'!
     // Docu: https://ompl.kavrakilab.org/classompl_1_1base_1_1PlannerData.html
@@ -156,10 +186,13 @@ void plans::dump_solution(std::string &output_archive_path, ompl::geometric::Sim
 
     // Close the stream
     graph_viz_stream.close();
+}
 
+void plans::dump_vertex(const std::string &file_path, ompl::base::PlannerData *planner_data)
+{
     // Create the file stream
     std::ofstream vertexes_vrt_stream;
-    vertexes_vrt_stream.open (vertexes_vrt_path);
+    vertexes_vrt_stream.open (file_path);
 
     // Get the number of vertices that the tree has
     auto num_vertices = planner_data->numVertices();

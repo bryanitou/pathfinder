@@ -16,6 +16,7 @@
 #include "state_validity_checker.h"
 #include "motion_validator.h"
 #include "json_parser.h"
+#include "pathfinder_output.h"
 
 namespace plans
 {
@@ -27,17 +28,25 @@ namespace plans
      * - Set the start/goal poses
      * @param space
      * @param json_obj
-     * @param output_archive_path
+     * @param output_objects
      * @param squares
      */
     void plan_DUAVC(const ompl::base::StateSpacePtr &space, json_parser::json_obj& json_obj,
-                    std::string &output_archive_path, const std::vector<simple_square *> *squares = nullptr);
+                    std::vector<pathfinder_output> &output_objects, const std::vector<simple_square *> *squares = nullptr);
 
 
     /**
      * Dump the solution to some files
-     * @param output_archive_path
+     * @param output_objects
      * @param ss
      */
-    void dump_solution(std::string &output_archive_path, ompl::geometric::SimpleSetup &ss);
+    void dump_solution(std::vector<pathfinder_output> &output_objects, ompl::geometric::SimpleSetup &ss);
+
+
+    void dump_plan(const std::string& file_path, ompl::geometric::PathGeometric &path);
+
+    void dump_graph(const std::string &file_path, const ompl::base::SpaceInformationPtr &siPtr,
+                    const ompl::base::PlannerPtr &planner);
+
+    void dump_vertex(const std::string &file_path, ompl::base::PlannerData *planner_data);
 }
