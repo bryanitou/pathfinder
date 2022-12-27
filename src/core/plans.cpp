@@ -6,7 +6,7 @@
 
 
 void plans::plan_DUAVC(const ompl::base::StateSpacePtr& space, json_parser::json_obj& json_obj,
-                       std::string& plan_txt_path, const std::vector<simple_square*>* squares)
+                       std::string& output_archive_path, const std::vector<simple_square*>* squares)
 {
     // Scoped state
     ompl::base::ScopedState<> start_scoped(space), goal_scoped(space);
@@ -88,54 +88,106 @@ void plans::plan_DUAVC(const ompl::base::StateSpacePtr& space, json_parser::json
     // Check if solved
     if (solved)
     {
-        std::ofstream myfile;
-        myfile.open (plan_txt_path);
-        std::vector<double> reals;
-
+        // Info: notice the user that we've found a valid solution
         std::cout << "Found solution:" << std::endl;
-        ss.simplifySolution();
-        ompl::geometric::PathGeometric path = ss.getSolutionPath();
-        path.interpolate(1000);
-        path.printAsMatrix(myfile);
-        myfile.close();
 
-        auto planner_data = new ompl::base::PlannerData(siPtr);
-        planner->getPlannerData(*planner_data);
+        // Info: we are going to print some files
+        std::cout << "Some files are going to be written in the archive" + output_archive_path << std::endl;
 
-        std::ofstream myfile2;
-        myfile2.open ("./out/graph.viz");
-        planner_data->printGraphviz(myfile2);
-        myfile2.close();
+        // Dump solution into some files
+        plans::dump_solution(output_archive_path, ss);
 
-
-        std::ofstream myfile3;
-        myfile2.open ("./out/vertexes.vrt");
-        auto num_vertices = planner_data->numVertices();
-        for (int i = 0; i < num_vertices; i++)
-        {
-            // Print data of vertices
-            auto planner_data_vertex = planner_data->getVertex(i);
-
-            // Vertex state as real vector state R2
-            auto vertex_state = planner_data_vertex.getState()->as<ompl::base::DubinsStateSpace::StateType>();
-
-            // Get x, y coordinates
-            double x = vertex_state->getX();
-            double y = vertex_state->getY();
-            double yaw = vertex_state->getYaw();
-
-            // Note : format
-            // i = 0: goal_scoped
-            // i = 1: start_scoped
-            // Write in file
-            myfile2 << std::to_string(i) << " ";
-            myfile2 << std::to_string(x) << " ";
-            myfile2 << std::to_string(y) << " ";
-            myfile2 << std::to_string(yaw) << std::endl;
-        }
-
-        myfile2.close();
+        // Info: notice we have finished
+        std::cout << "All files written in the archive: " + output_archive_path << std::endl;
     }
     else
-        std::cout << "No solution found" << std::endl;
+    {
+        // Info: no valid solution found!
+        std::cout << "No solution found!" << std::endl;
+    }
+}
+
+
+void plans::dump_solution(std::string &output_archive_path, ompl::geometric::SimpleSetup& ss)
+{
+    // From the ss, get the space information pointer and the planner
+    auto siPtr = ss.getSpaceInformation();
+    auto planner = ss.getPlanner();
+
+    // Build paths
+    std::string plan_txt_path       = output_archive_path + "/plan.txt";
+    std::string vertexes_vrt_path   = output_archive_path + "/vertexes.vrt";
+    std::string graph_viz_path      = output_archive_path + "/graph.viz";
+
+    // Create file stream
+    std::ofstream plan_file_stream;
+    plan_file_stream.open(plan_txt_path);
+    std::vector<double> reals;
+
+    // Simplify solution output:
+    // TODO: Research what the hell the "Simplify" function does, are we loosing too much accuracy?
+    ss.simplifySolution();
+
+    // Get the solution path as a list of reals
+    ompl::geometric::PathGeometric path = ss.getSolutionPath();
+
+    // Interpolate the path, getting as a result 1000 points
+    path.interpolate(1000);
+
+    // Print the path as a matrix in the given stream
+    path.printAsMatrix(plan_file_stream);
+
+    // Close the stream
+    plan_file_stream.close();
+
+    // Get the planner data, so we can extract useful information such as the expanded search tree
+    auto planner_data = new ompl::base::PlannerData(siPtr);
+
+    // Get the planner data from the planner data (what are we exactly doing here?)
+    planner->getPlannerData(*planner_data);
+
+    // Create the graph viz file stream
+    std::ofstream graph_viz_stream;
+    graph_viz_stream.open (graph_viz_path);
+
+    // Print the graph (from the expanded tree) in the stream, it has its own format '.viz'!
+    // Docu: https://ompl.kavrakilab.org/classompl_1_1base_1_1PlannerData.html
+    planner_data->printGraphviz(graph_viz_stream);
+
+    // Close the stream
+    graph_viz_stream.close();
+
+    // Create the file stream
+    std::ofstream vertexes_vrt_stream;
+    vertexes_vrt_stream.open (vertexes_vrt_path);
+
+    // Get the number of vertices that the tree has
+    auto num_vertices = planner_data->numVertices();
+
+    // Iterate through the number of vertices
+    for (int i = 0; i < num_vertices; i++)
+    {
+        // Print data of this 'ith' vertex
+        auto planner_data_vertex = planner_data->getVertex(i);
+
+        // Vertex state as real vector state R2
+        auto vertex_state = planner_data_vertex.getState()->as<ompl::base::DubinsStateSpace::StateType>();
+
+        // Get x, y and yaw coordinates
+        double x = vertex_state->getX();
+        double y = vertex_state->getY();
+        double yaw = vertex_state->getYaw();
+
+        // Note : format
+        // i = 0: goal_scoped
+        // i = 1: start_scoped
+        // Write in file
+        vertexes_vrt_stream << std::to_string(i) << " ";
+        vertexes_vrt_stream << std::to_string(x) << " ";
+        vertexes_vrt_stream << std::to_string(y) << " ";
+        vertexes_vrt_stream << std::to_string(yaw) << std::endl;
+    }
+
+    // Close vertexes stream
+    vertexes_vrt_stream.close();
 }
