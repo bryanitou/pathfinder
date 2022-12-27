@@ -93,7 +93,7 @@ int main(int argc, char* argv[])
             plans::plan_DUAVC(space, parsed_json_object, output_objs);
 
             // Post process the outputs
-            post_processor::run_python_scripts(output_objs)
+            post_processor::run_python_scripts(output_objs);
         }
         else
         {
