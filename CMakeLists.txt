@@ -215,7 +215,7 @@ set_target_properties(${LIBRARY_CORE} PROPERTIES
 set(LIBRARY_CORE "core")
 
 add_library(${LIBRARY_CORE} SHARED
-        src/core/preprocessor.cpp
+        src/core/pre_processor.cpp
         src/core/simple_square.cpp
         src/core/motion_validator.cpp
         src/core/state_sampler.cpp
@@ -224,7 +224,10 @@ add_library(${LIBRARY_CORE} SHARED
         src/core/state_validity_checker.cpp
         src/core/json_parser.cpp
         src/core/tools_str.cpp
-        src/core/constants.h)
+        src/core/constants.h
+        src/core/post_processor.cpp
+        src/core/enums.h
+        src/core/pathfinder_output.cpp)
 
 add_dependencies(${LIBRARY_CORE}
         ompl)
