@@ -6,15 +6,23 @@
 
 bool DubinsMotionValidator_Squares::is_in_Squares(const ompl::base::State *s) const
 {
+    // If the squares are available, iterate through them
+    if (this->squares_ == nullptr)
+    {
+        return false;
+    }
+
     // Get x & y positions:
     const auto *state = s->as<ompl::base::SE2StateSpace::StateType>();
     double x=state->getX(), y=state->getY();
 
-
     // Iterate through all the squares
     for (const auto & sq : *this->squares_)
     {
+        // Are we inside the square?
         bool s_is_in_a_square = sq->is_in_square(x, y);
+
+        // If so, return true, no need to keep checking
         if (s_is_in_a_square)
         {
             return true;
