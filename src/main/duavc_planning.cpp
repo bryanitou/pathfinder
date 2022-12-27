@@ -7,9 +7,11 @@
 
 // System libraries
 #include <iostream>
+#include <filesystem>
 
 // Project libraries
 #include "Ampli_DubinsStateSpace.h"
+#include "plans.h"
 
 // JSON Parser interface
 #include "json_parser.h"
@@ -30,10 +32,8 @@ int main(int argc, char* argv[])
         po::options_description desc("Options");
         desc.add_options()
                 ("help", "show help message")
-                ("start",po::value<std::vector<double > >()->multitoken(),
-                        "use Dubins state space")
-                ("goal",po::value<std::vector<double > >()->multitoken(),
-                 "use Dubins state space")
+                ("start",po::value<std::vector<double > >()->multitoken(),"use Dubins state space")
+                ("goal",po::value<std::vector<double > >()->multitoken(),"use Dubins state space")
                 ("file", po::value<std::string>(&input_file)->default_value("./cfg/example.json"),
                         "in the house formatted .dat file.")
                 ("output", "where to dump the output files (folder). File names are hard set.")
@@ -53,10 +53,9 @@ int main(int argc, char* argv[])
         }
 
         // Hard set the output files
+        std::filesystem::path output_archive_relpath = "./out/duavc/";
+        auto output_archive_realpath = output_archive_relpath.root_path().string();
         std::string trajectory_txt_path = "./out/trajectory.txt";
-        std::string plan_txt_path = "./out/plan.txt";
-        std::string vertexes_vrt_path = "./out/vertexes.vrt";
-        std::string graph_viz_path = "./out/graph.viz";
 
         // Set the space
         ob::StateSpacePtr space = std::make_shared<Ampli_DubinsStateStateSpace>();
@@ -84,10 +83,10 @@ int main(int argc, char* argv[])
         {
             // At this point, means we have to use the input file
             // Get the name of the input file
-            auto parsed_object = json_parser::parse_input_file(input_file);
+            auto parsed_json_object = json_parser::parse_input_file(input_file);
 
             // Once we have the parsed object, we have to launch the simulation
-
+            plans::plan_DUAVC(space, parsed_json_object, output_archive_realpath);
         }
         else
         {
