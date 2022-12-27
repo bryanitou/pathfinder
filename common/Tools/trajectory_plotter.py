@@ -171,7 +171,8 @@ def main(arguments):
 
     # If it exists, read it
     trajectory_lines = read_trajectory_txt_file(trajectory_file)
-    square_lines = read_squares_txt_file("./out/simple_squares.txt")
+    not_fixed = True
+    square_lines = [] if not_fixed else read_squares_txt_file("./out/simple_squares.txt")
 
     fig_path = trajectory_file.split('.txt')[0]
 
