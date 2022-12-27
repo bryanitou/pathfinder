@@ -12,6 +12,8 @@
 // Project libraries
 #include "Ampli_DubinsStateSpace.h"
 #include "plans.h"
+#include "pre_processor.h"
+#include "post_processor.h"
 
 // JSON Parser interface
 #include "json_parser.h"
@@ -55,7 +57,9 @@ int main(int argc, char* argv[])
         // Hard set the output files
         std::filesystem::path output_archive_relpath = "./out/duavc/";
         auto output_archive_realpath = output_archive_relpath.root_path().string();
-        std::string trajectory_txt_path = "./out/trajectory.txt";
+
+        // Define the default outputs for this main
+        auto output_objs = pre_processor::generate_default_outputs(output_archive_realpath);
 
         // Set the space
         ob::StateSpacePtr space = std::make_shared<Ampli_DubinsStateStateSpace>();
@@ -86,7 +90,10 @@ int main(int argc, char* argv[])
             auto parsed_json_object = json_parser::parse_input_file(input_file);
 
             // Once we have the parsed object, we have to launch the simulation
-            plans::plan_DUAVC(space, parsed_json_object, output_archive_realpath);
+            plans::plan_DUAVC(space, parsed_json_object, output_objs);
+
+            // Post process the outputs
+            post_processor::run_python_scripts(output_objs)
         }
         else
         {
