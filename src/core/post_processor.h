@@ -16,8 +16,8 @@ namespace post_processor
 
     /**
      * Run the python scripts
-     * @param paths_complex_map
+     * @param output_objects
      */
-    void run_python_scripts(std::vector<pathfinder_output> &paths_complex_map);
+    void run_python_scripts(std::vector<pathfinder_output> &output_objects);
 };
 

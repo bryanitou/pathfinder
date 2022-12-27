@@ -4,7 +4,7 @@
 
 #include "post_processor.h"
 
-void post_processor::run_python_scripts(std::vector<pathfinder_output>& paths_complex_map)
+void post_processor::run_python_scripts(std::vector<pathfinder_output>& output_objects)
 {
     // TODO: Make it available to choose the parallel work
     // Python3 to be used
@@ -14,13 +14,13 @@ void post_processor::run_python_scripts(std::vector<pathfinder_output>& paths_co
     std::vector<std::string> cmd_list;
 
     // Reserve memory, we already now how many we have
-    cmd_list.reserve(paths_complex_map.size());
+    cmd_list.reserve(output_objects.size());
 
     // Locate the python script: TODO: To be an input in the future
     std::string trajectory_plotter = "./common/Tools/trajectory_plotter.py";
 
     // First of all, we will build all the cmd calls, after it, we will call 'em
-    for(auto& path_obj : paths_complex_map)
+    for(auto& path_obj : output_objects)
     {
         // First, we will get the 'type of path', this is an enum. TODO: For the while we don't use it
         auto type_of_output = path_obj.get_type();
