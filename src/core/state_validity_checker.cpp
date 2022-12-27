@@ -7,6 +7,12 @@
 bool state_validity_checker::isStateValidSquares(const ompl::base::SpaceInformation *si, const ompl::base::State *state,
                                                  const std::vector<simple_square*>* squares)
 {
+    // Safety check: ensure that the squares is not a nullptr
+    if (squares == nullptr)
+    {
+        return true;
+    }
+
     // Set the State Space
     const auto *s = state->as<ompl::base::SE2StateSpace::StateType>();
 
