@@ -10,7 +10,6 @@
 #include <filesystem>
 
 // Project libraries
-#include "Ampli_DubinsStateSpace.h"
 #include "plans.h"
 #include "pre_processor.h"
 #include "post_processor.h"
@@ -55,11 +54,17 @@ int main(int argc, char* argv[])
         }
 
         // Hard set the output files
-        std::filesystem::path output_archive_relpath = "./out/duavc/";
-        auto output_archive_realpath = output_archive_relpath.root_path().string();
+        std::filesystem::path output_archive_relpath = "out/duavc/";
+
+        // Create directory
+        std::filesystem::create_directory(output_archive_relpath);
+
+        // Get the real path
+        auto output_archive_abspath_fs = std::filesystem::absolute(output_archive_relpath);
+        auto output_archive_abspath_str = output_archive_abspath_fs.string();
 
         // Define the default outputs for this main
-        auto output_objs = pre_processor::generate_default_outputs(output_archive_realpath);
+        auto output_objs = pre_processor::generate_default_outputs(output_archive_abspath_str);
 
         // Set the space
         ob::StateSpacePtr space = std::make_shared<Ampli_DubinsStateStateSpace>();
