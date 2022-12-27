@@ -45,8 +45,7 @@ namespace plans
 
     void dump_plan(const std::string& file_path, ompl::geometric::PathGeometric &path);
 
-    void dump_graph(const std::string &file_path, const ompl::base::SpaceInformationPtr &siPtr,
-                    const ompl::base::PlannerPtr &planner);
+    void dump_graph(const std::string &file_path, ompl::base::PlannerData * planner_data);
 
-    void dump_vertex(const std::string &file_path, ompl::base::PlannerData *planner_data);
+    void dump_vertex(const std::string &file_path, ompl::base::PlannerData * planner_data);
 }

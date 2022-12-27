@@ -89,7 +89,7 @@ void plans::plan_DUAVC(const ompl::base::StateSpacePtr& space, json_parser::json
     if (solved)
     {
         // Info: notice the user that we've found a valid solution
-        std::cout << "Found solution:" << std::endl;
+        std::cout << "Found solution!" << std::endl;
 
         // Info: we are going to print some files
         std::cout << "Some files are going to be written!" << std::endl;
@@ -121,6 +121,9 @@ void plans::dump_solution(std::vector<pathfinder_output> &output_objects, ompl::
     // Get the planner data, so we can extract useful information such as the expanded search tree
     auto planner_data = new ompl::base::PlannerData(siPtr);
 
+    // Get the planner data from the planner data (what are we exactly doing here?)
+    planner->getPlannerData(*planner_data);
+
     // Create file stream
     for (auto & output_obj : output_objects)
     {
@@ -135,7 +138,7 @@ void plans::dump_solution(std::vector<pathfinder_output> &output_objects, ompl::
                 }
                 case OUTPUT_TYPE::GRAPH:
                 {
-                    plans::dump_graph(output_obj.get_path(), siPtr, planner);
+                    plans::dump_graph(output_obj.get_path(), planner_data);
                     break;
                 }
                 case OUTPUT_TYPE::VERTEXES:
@@ -168,14 +171,8 @@ void plans::dump_plan(const std::string& file_path, ompl::geometric::PathGeometr
     plan_file_stream.close();
 }
 
-void plans::dump_graph(const std::string& file_path, const ompl::base::SpaceInformationPtr& siPtr, const ompl::base::PlannerPtr& planner)
+void plans::dump_graph(const std::string& file_path, ompl::base::PlannerData * planner_data)
 {
-    // Get the planner data, so we can extract useful information such as the expanded search tree
-    auto planner_data = new ompl::base::PlannerData(siPtr);
-
-    // Get the planner data from the planner data (what are we exactly doing here?)
-    planner->getPlannerData(*planner_data);
-
     // Create the graph viz file stream
     std::ofstream graph_viz_stream;
     graph_viz_stream.open (file_path);
@@ -188,7 +185,7 @@ void plans::dump_graph(const std::string& file_path, const ompl::base::SpaceInfo
     graph_viz_stream.close();
 }
 
-void plans::dump_vertex(const std::string &file_path, ompl::base::PlannerData *planner_data)
+void plans::dump_vertex(const std::string &file_path, ompl::base::PlannerData * planner_data)
 {
     // Create the file stream
     std::ofstream vertexes_vrt_stream;

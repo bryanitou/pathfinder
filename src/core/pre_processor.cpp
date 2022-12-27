@@ -12,9 +12,9 @@ std::vector<pathfinder_output> pre_processor::generate_default_outputs(std::stri
     std::string graph_viz_path      = output_farchive + "/graph.viz";
 
     // Manually generate the outputs
-    pathfinder_output output1(OUTPUT_TYPE::PLAN, plan_txt_path);
-    pathfinder_output output2(OUTPUT_TYPE::VERTEXES, vertexes_vrt_path);
-    pathfinder_output output3(OUTPUT_TYPE::GRAPH, graph_viz_path);
+    pathfinder_output output1(OUTPUT_TYPE::PLAN, plan_txt_path, true);
+    pathfinder_output output2(OUTPUT_TYPE::VERTEXES, vertexes_vrt_path, true);
+    pathfinder_output output3(OUTPUT_TYPE::GRAPH, graph_viz_path, true);
 
     // Create vector to return
     std::vector<pathfinder_output> result = {output1, output2, output3};
