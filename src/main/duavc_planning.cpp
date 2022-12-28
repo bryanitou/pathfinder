@@ -102,15 +102,20 @@ int main(int argc, char* argv[])
         }
         else
         {
+            // Should not arrive to this point
             // At this point, means nothing happened, throw help message
 
         }
     }
-    catch(std::exception& e) {
+    catch(std::exception& e)
+    {
+        // Catch KNOWN error
         std::cerr << "Error: " << e.what() << "\n";
         return 1;
     }
-    catch(...) {
+    catch(...)
+    {
+        // Catch UNKNOWN errors
         std::cerr << "Exception of unknown type!\n";
     }
 
