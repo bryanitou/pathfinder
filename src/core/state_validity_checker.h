@@ -13,5 +13,5 @@
 namespace state_validity_checker {
 
     bool isStateValidSquares(const ompl::base::SpaceInformation *si, const ompl::base::State *state,
-                             const std::vector<simple_square *> *squares);
+                             const std::vector<simple_square > *squares);
 };

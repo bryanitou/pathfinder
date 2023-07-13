@@ -57,7 +57,15 @@ int main(int argc, char* argv[])
         std::filesystem::path output_archive_relpath = "out/duavc/";
 
         // Create directory
-        std::filesystem::create_directory(output_archive_relpath);
+        bool flag_out_dir = std::filesystem::create_directory(output_archive_relpath);
+
+        // Check returned flag
+        if (!flag_out_dir)
+        {
+            // Check flag out directory
+            std::fprintf(stdout, "Couldn't create output directory: '%s'\n",
+                         std::filesystem::absolute(output_archive_relpath).c_str());
+        }
 
         // Get the real path
         auto output_archive_abspath_fs = std::filesystem::absolute(output_archive_relpath);

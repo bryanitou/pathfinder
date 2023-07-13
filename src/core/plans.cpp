@@ -43,10 +43,13 @@ void plans::plan_DUAVC(const ompl::base::StateSpacePtr& space, json_parser::json
     // Set the State Validity Checker
     ompl::base::ProblemDefinition pdef  (siPtr);
 
+    // Get the squares list pointer
+    auto squares_ptr = &json_obj.squares_list;
+
     auto isStateValid = state_validity_checker::isStateValidSquares;
-    ss.setStateValidityChecker([isStateValid, si, squares](const ompl::base::State *state)
+    ss.setStateValidityChecker([isStateValid, si, squares_ptr](const ompl::base::State *state)
                                {
-                                   return isStateValid(si, state, squares);
+                                   return isStateValid(si, state, squares_ptr);
                                });
 
     // Minimum radius for the turns

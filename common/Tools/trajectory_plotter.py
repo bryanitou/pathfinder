@@ -181,7 +181,7 @@ def main(arguments):
         # Plot it
         trajectory_tree_plot(trajectory_lines, fig_path, square_lines)
 
-    if len(arguments) > 1:  # In this case, tnis means that we have to build a graph
+    if len(arguments) > 1:  # In this case, this means that we have to build a graph
         fig_path += "-graph.png"
         # Get graph files
         vrt_viz_files = get_vrt_viz_graph(arguments)

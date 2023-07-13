@@ -45,7 +45,13 @@ void post_processor::run_python_scripts(std::vector<pathfinder_output>& output_o
                 std::string write_ampersand = launch_parallel ? " &" : "";
 
                 // Now, we should build the command call
-                std::string cmd_str = cmd_call + " " + trajectory_plotter_abspath + " " + fpath_output + write_ampersand;
+                std::string cmd_str = cmd_call;
+                cmd_str += " ";
+                cmd_str += trajectory_plotter_abspath;
+                cmd_str += " ";
+                cmd_str += fpath_output;
+                cmd_str += " ";
+                cmd_str += write_ampersand;
 
                 // Append to the list commands
                 cmd_list.push_back(cmd_str);

@@ -6,7 +6,7 @@
 
 bool DubinsMotionValidator_Squares::is_in_Squares(const ompl::base::State *s) const
 {
-    // If the squares are available, iterate through them
+    // If the squares_dict are available, iterate through them
     if (this->squares_ == nullptr)
     {
         return false;
@@ -16,7 +16,7 @@ bool DubinsMotionValidator_Squares::is_in_Squares(const ompl::base::State *s) co
     const auto *state = s->as<ompl::base::SE2StateSpace::StateType>();
     double x=state->getX(), y=state->getY();
 
-    // Iterate through all the squares
+    // Iterate through all the squares_dict
     for (const auto & sq : *this->squares_)
     {
         // Are we inside the square?

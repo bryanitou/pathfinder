@@ -1,5 +1,5 @@
 /**
- * Modification of the Motion validator in order to avoid squares.
+ * Modification of the Motion validator in order to avoid squares_dict.
  */
 #pragma once
 

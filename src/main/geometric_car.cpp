@@ -69,7 +69,7 @@ bool isStateValidEasy(const ob::SpaceInformation *si, const ob::State *state, co
     const auto *s = state->as<ob::SE2StateSpace::StateType>();
     double x=s->getX(), y=s->getY();
 
-    // Iterate through all the squares
+    // Iterate through all the squares_dict
     for (const auto & sq : *squares)
     {
         bool is_in_a_square = sq->is_in_square(x, y);

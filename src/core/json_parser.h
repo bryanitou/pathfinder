@@ -6,6 +6,7 @@
 #include "RSJparser.tcc"
 #include "tools_str.h"
 #include "constants.h"
+#include "simple_square.h"
 
 namespace json_parser
 {
@@ -19,6 +20,12 @@ namespace json_parser
         double lat_lower;
         double lon_right;
         double lon_left;
+
+        // Collection of squares_dict
+        std::unordered_map<std::string, simple_square> squares_dict;
+
+        // Squares list
+        std::vector<simple_square> squares_list;
     };
 
     /**
@@ -40,5 +47,7 @@ namespace json_parser
      * @param deg2rad
      */
     void update_units(json_parser::json_obj & output_json_obj, bool deg2rad);
+
+    void read_squares(RSJresource &RSJ_obj, json_obj &output_json_obj);
 };
 

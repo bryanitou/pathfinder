@@ -44,6 +44,9 @@ json_parser::json_obj json_parser::parse_input_file(const std::string& filepath)
     my_json_obj.start = my_resource_obj["start"].as_vector<double>();
     my_json_obj.operator_str = tools_str::clean_bars(my_resource_obj["operator"].as_str());
 
+    // Charge squares_dict
+    json_parser::read_squares(my_resource_obj, my_json_obj);
+
     // Parse the bounds
     json_parser::read_bounds(my_resource_obj, my_json_obj);
 
@@ -52,6 +55,27 @@ json_parser::json_obj json_parser::parse_input_file(const std::string& filepath)
 
     // Return the object
     return my_json_obj;
+}
+
+void json_parser::read_squares(RSJresource &RSJ_obj, json_parser::json_obj &output_json_obj)
+{
+    // To be returned is 'output_json_obj'
+    // This function is dedicated to read the squares_dict
+    auto squares_dict = RSJ_obj["squares_dict"].as_map<std::string>();
+
+    // Iterate through each square
+    for (auto & square : squares_dict)
+    {
+        // Convert from string to vector of doubles
+        auto square_vector = tools_str::str2vector<double>(square.second);
+
+        // Insert square
+        output_json_obj.squares_dict.emplace(square.first, simple_square(square_vector));
+
+        // Push back in the simple list
+        output_json_obj.squares_list.emplace_back(square_vector);
+    }
+
 }
 
 void json_parser::read_bounds(RSJresource &RSJ_obj, json_parser::json_obj &output_json_obj)

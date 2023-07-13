@@ -1,7 +1,3 @@
-//
-// Created by bryan on 11/12/22.
-//
-
 #include "tools_str.h"
 
 std::string tools_str::clean_bars(const std::string& str2clean)
