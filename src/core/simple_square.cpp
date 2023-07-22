@@ -34,7 +34,7 @@ void simple_square::set_bounds(double x_left, double x_right, double y_upper, do
     }
 }
 
-std::vector<double> simple_square::get_limits() {
+std::vector<double> simple_square::get_limits() const {
     std::vector<double> limits = {this->x_left, this->x_right, this->y_upper, this->y_lower};
     return limits;
 }

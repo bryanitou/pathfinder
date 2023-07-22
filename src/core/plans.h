@@ -42,10 +42,12 @@ namespace plans
      */
     void dump_solution(std::vector<pathfinder_output> &output_objects, ompl::geometric::SimpleSetup &ss);
 
-
     void dump_plan(const std::string& file_path, ompl::geometric::PathGeometric &path);
 
     void dump_graph(const std::string &file_path, ompl::base::PlannerData * planner_data);
 
     void dump_vertex(const std::string &file_path, ompl::base::PlannerData * planner_data);
+
+
+    void printSimpleSquares(const std::string &file_path, const std::vector<simple_square > *squares);
 }

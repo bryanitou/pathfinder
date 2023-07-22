@@ -15,7 +15,7 @@ public:
     ~simple_square() = default;
 
 public:
-    std::vector<double> get_limits();
+    std::vector<double> get_limits() const;
 
     [[nodiscard]] bool is_in_square(double x, double y) const;
 private:

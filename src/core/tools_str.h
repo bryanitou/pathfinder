@@ -10,7 +10,11 @@ namespace tools_str
     {
         const static std::string bars = "\\/";
         const static std::string comma = "\"";
+        const static std::string bracket_left = "[";
+        const static std::string bracket_right = "]";
     }
+
+    std::string clean_str(const std::string& str2clean, const std::string & str2remove = "");
 
     std::string clean_bars(const std::string& str2clean);
 

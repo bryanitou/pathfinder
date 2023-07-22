@@ -2,7 +2,6 @@ template<typename T>
 std::vector<T> tools_str::str2vector(const std::string& str2vector, const std::string& delimiter)
 {
     // Auxiliary variables
-    auto s = str2vector;
     size_t pos = 0;
     std::string token;
     T token_type;
@@ -10,6 +9,11 @@ std::vector<T> tools_str::str2vector(const std::string& str2vector, const std::s
     // Output to be returned
     std::vector<T> vector2return{};
 
+    // Clean brackets
+    auto s = tools_str::clean_str(str2vector, tools_str::keys::bracket_left + tools_str::keys::bracket_right);
+
+    // Just for the loop to work, add a delimiter (i.e., ",") at the end
+    s += delimiter;
 
     // Iterate until no more positions
     while ((pos = s.find(delimiter)) != std::string::npos)

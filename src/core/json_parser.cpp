@@ -61,7 +61,7 @@ void json_parser::read_squares(RSJresource &RSJ_obj, json_parser::json_obj &outp
 {
     // To be returned is 'output_json_obj'
     // This function is dedicated to read the squares_dict
-    auto squares_dict = RSJ_obj["squares_dict"].as_map<std::string>();
+    auto squares_dict = RSJ_obj["squares"].as_map<std::string>();
 
     // Iterate through each square
     for (auto & square : squares_dict)

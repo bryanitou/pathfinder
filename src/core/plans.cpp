@@ -65,16 +65,19 @@ void plans::plan_DUAVC(const ompl::base::StateSpacePtr& space, json_parser::json
     ss.setStartAndGoalStates(start_scoped, goal_scoped);
 
     // This call is optional, but we put it in to get more output information
+    // TODO: Set this from the JSON file
     ss.getSpaceInformation()->setStateValidityCheckingResolution(0.0005);
 
     // Set the planner to be used
     ompl::base::PlannerPtr planner(new ompl::geometric::RRT(siPtr));
 
     // Set the Goal Bias of the planner
+    // TODO: Set this from the JSON file
     planner->as<ompl::geometric::RRT>()->setGoalBias(0.05);
 
     // Set the range to be used
-    planner->as<ompl::geometric::RRT>()->setRange(15);
+    // TODO: Set this from the JSON sile
+    planner->as<ompl::geometric::RRT>()->setRange(0.5);
 
     // Set the planner chosen and defined above
     ss.setPlanner(planner);
@@ -86,7 +89,11 @@ void plans::plan_DUAVC(const ompl::base::StateSpacePtr& space, json_parser::json
     ss.print();
 
     // Attempt to solve the problem within 0.05 seconds of planning time
-    ompl::base::PlannerStatus solved = ss.solve(0.05);
+    // TODO: Set the planner termination condition
+    //  It can be:
+    //  - Time
+    //  - Planner termination condition object
+    ompl::base::PlannerStatus solved = ss.solve(0.1);
 
     // Check if solved
     if (solved)
@@ -99,6 +106,12 @@ void plans::plan_DUAVC(const ompl::base::StateSpacePtr& space, json_parser::json
 
         // Dump solution into some files
         plans::dump_solution(output_objects, ss);
+
+        // Dump squares if present
+        if (!squares_ptr->empty())
+        {
+            plans::printSimpleSquares("./out/duavc/simple_squares.txt", squares_ptr);
+        }
     }
     else
     {
@@ -223,4 +236,27 @@ void plans::dump_vertex(const std::string &file_path, ompl::base::PlannerData * 
 
     // Close vertexes stream
     vertexes_vrt_stream.close();
+}
+
+void plans::printSimpleSquares(const std::string &file_path, const std::vector<simple_square>* squares)
+{
+    // Path of the output file
+    std::ofstream myfile;
+    myfile.open(file_path);
+
+    // Create square limits vector
+    std::vector<double> sq_lims(4);
+
+    // Iterate through each square
+    for (const auto & sq : *squares)
+    {
+        // Get limits of the square
+        sq_lims = sq.get_limits();
+
+        // Write in file
+        myfile << sq_lims[0] << ' ' << sq_lims[1] << ' ' << sq_lims[2] << ' ' << sq_lims[3] << std::endl;
+    }
+
+    // Close files
+    myfile.close();
 }
