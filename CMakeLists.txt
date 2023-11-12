@@ -73,6 +73,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_INSTALL_PREFIX}/bin/")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_INSTALL_PREFIX}/lib/")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_INSTALL_PREFIX}/lib/")
 
+# RSJp directories
+set(CMAKE_3RDPARTY_DIR_RJSP_MASTER "${CMAKE_3RDPARTY_DIR}/RSJp-cpp-master"
+        CACHE STRING "Default directory to extracted 3rd parties: RSJp-cpp-master")
+message(STATUS "CMAKE_3RDPARTY_DIR_RJSP_MASTER: ${CMAKE_3RDPARTY_DIR_RJSP_MASTER}")
+
 # Define var to store all user flags
 set(UCFLAGS " ")
 
@@ -133,11 +138,12 @@ ExternalProject_Add(ompl
         INSTALL_COMMAND make install
         )
 
-# ExternalProject_Add(RSJP
-#         SOURCE_DIR ${CMAKE_3RDPARTY_DIR}/RSJp-cpp-master/
-#         PREFIX ${CMAKE_3RDPARTY_DIR}/RSJp-cpp-master/
-#         INSTALL_DIR ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}RSJp-cpp-master/
-#         )
+# Build RJSP: Ridiculously JSON Parser: https://github.com/subh83/RSJp-cpp
+add_custom_command(OUTPUT ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}RSJp/include/RSJparser.tcc
+        COMMAND make PREFIX=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}RSJp
+        WORKING_DIRECTORY ${CMAKE_3RDPARTY_DIR_RJSP_MASTER}
+)
+
 
 ############################################
 # EXTERNAL INFORMATION
@@ -162,7 +168,7 @@ set(ompllib_path "${ompllib_dir}/${ompllib_file}")
 # Location of header files and libraries (inside source dir, except the includes)
 include_directories(
         ${omplinclude}
-        ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}RSJp-cpp-master/include
+        ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}RSJp/include
         src/core
         ${EIGEN3_INCLUDE_DIR}
         ${Boost_INCLUDE_DIRS})
@@ -180,21 +186,24 @@ set_target_properties(${LIBRARY_OMPL} PROPERTIES
 #===========================================
 # LIBRARY: RSJp-cpp-master (IMPORTED LIBRARY)
 #===========================================
-add_library(rsjp SHARED
-        ${CMAKE_3RDPARTY_DIR}/RSJp-cpp-master/RSJparser.tcc)
+# TODO: Fix this bullshit
+set(LIBRARY_RSJP_LIB "rsjp")
+
+add_library(${LIBRARY_RSJP_LIB} SHARED
+        ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}RSJp/include/RSJparser.tcc)
 
 # Provide the full path to the library, so CMake knows where to find it
-set_target_properties(rsjp PROPERTIES LINKER_LANGUAGE CXX COMPILE_FLAGS "-fPIC"
-        PUBLIC_HEADER "${CMAKE_3RDPARTY_DIR}/RSJp-cpp-master/RSJparser.tcc")
+set_target_properties(${LIBRARY_RSJP_LIB} PROPERTIES
+        LINKER_LANGUAGE CXX
+        COMPILE_FLAGS "-fPIC"
+        PUBLIC_HEADER "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}RSJp/include/RSJparser.tcc"
+        LINK_FLAGS "-Wl,-rpath,./")
 
 # TODO: INSTALLATION STILL NOT WORKING, should change the prefix of the PREFIX and make install the makefile
-install(TARGETS rsjp
-        LIBRARY DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}RSJp-cpp-master/lib
-        PUBLIC_HEADER DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}RSJp-cpp-master/include)
-
-# add_custom_target(rsjp COMMAND make install
-#         WORKING_DIRECTORY ${CMAKE_3RDPARTY_DIR}/RSJp-cpp-master/
-#         )
+# install(TARGETS rsjp
+#         LIBRARY DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}RSJp
+#         PUBLIC_HEADER DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}RSJp/include)
+#
 #===========================================
 # LIBRARY: POST-PROCESS, free OMPL and BOOST dependent
 #===========================================
