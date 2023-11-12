@@ -53,6 +53,9 @@ json_parser::json_obj json_parser::parse_input_file(const std::string& filepath)
     // Change units only if required
     json_parser::update_units(my_json_obj, deg2rad);
 
+    // Read output
+    my_json_obj.out_dir = tools_str::clean_bars(my_resource_obj["out_dir"].as_str(), "/");
+
     // Return the object
     return my_json_obj;
 }

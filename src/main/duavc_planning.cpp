@@ -53,27 +53,6 @@ int main(int argc, char* argv[])
             return 1;
         }
 
-        // Hard set the output files
-        std::filesystem::path output_archive_relpath = "out/duavc/";
-
-        // Create directory
-        bool flag_out_dir = std::filesystem::create_directory(output_archive_relpath);
-
-        // Check returned flag
-        if (!flag_out_dir)
-        {
-            // Check flag out directory
-            std::fprintf(stdout, "Couldn't create output directory: '%s'\n",
-                         std::filesystem::absolute(output_archive_relpath).c_str());
-        }
-
-        // Get the real path
-        auto output_archive_abspath_fs = std::filesystem::absolute(output_archive_relpath);
-        auto output_archive_abspath_str = output_archive_abspath_fs.string();
-
-        // Define the default outputs for this main
-        auto output_objs = pre_processor::generate_default_outputs(output_archive_abspath_str);
-
         // Set the space
         ob::StateSpacePtr space = std::make_shared<Ampli_DubinsStateStateSpace>();
 
@@ -101,6 +80,24 @@ int main(int argc, char* argv[])
             // At this point, means we have to use the input file
             // Get the name of the input file
             auto parsed_json_object = json_parser::parse_input_file(input_file);
+
+            // Create directory
+            bool flag_out_dir = std::filesystem::create_directory(parsed_json_object.out_dir);
+
+            // Check returned flag
+            if (!flag_out_dir)
+            {
+                // Check flag out directory
+                std::fprintf(stdout, "Couldn't create output directory: '%s'\n",
+                             std::filesystem::absolute(parsed_json_object.out_dir).c_str());
+            }
+
+            // Get the real path
+            auto output_archive_abspath_fs = std::filesystem::absolute(parsed_json_object.out_dir);
+            auto output_archive_abspath_str = output_archive_abspath_fs.string();
+
+            // Define the default outputs for this main
+            auto output_objs = pre_processor::generate_default_outputs(output_archive_abspath_str);
 
             // Once we have the parsed object, we have to launch the simulation
             plans::plan_DUAVC(space, parsed_json_object, output_objs);

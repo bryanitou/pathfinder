@@ -7,6 +7,7 @@
 #include "tools_str.h"
 #include "constants.h"
 #include "simple_square.h"
+#include <filesystem>
 
 namespace json_parser
 {
@@ -26,6 +27,9 @@ namespace json_parser
 
         // Squares list
         std::vector<simple_square> squares_list;
+
+        // Struct in out
+        std::filesystem::path out_dir;
     };
 
     /**

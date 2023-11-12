@@ -1,12 +1,21 @@
 #include "tools_str.h"
 
-std::string tools_str::clean_bars(const std::string& str2clean)
+std::string tools_str::clean_bars(const std::string& str2clean, const std::string & str2preserve)
 {
     // Copy new string
     std::string str2return = str2clean;
 
     // Chars we want to remove:
     std::string chars2remove = tools_str::keys::bars + tools_str::keys::comma;
+
+    if (!str2preserve.empty())
+    {
+        std::string::size_type i = chars2remove.find(str2preserve);
+
+        if (i != std::string::npos)
+            chars2remove.erase(i, str2preserve.length());
+    }
+
 
     // Remove characters
     for(char char2remove : chars2remove)
