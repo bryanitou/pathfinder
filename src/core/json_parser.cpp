@@ -22,7 +22,7 @@ json_parser::json_obj json_parser::parse_input_file(const std::string& filepath)
     // Read file
     if (f.is_open())
     {
-        // While we reading... set values
+        // While we're reading... set values
         while (f.good())
         {
             // Read line and assign it to 'json_text' variable
